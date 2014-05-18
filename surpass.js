@@ -6,7 +6,7 @@
   }
 
   function colorizer(andmask, ormask, factor) {
-    andmask = andmask | 0xffffff;
+    andmask = andmask & 0xffffff;
     return function(value) {
       var color = twiddlify(value, andmask, ormask, factor).toString(16);
       return '#000000'.slice(0, 7-color.length) + color;

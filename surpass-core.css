@@ -1,0 +1,81 @@
+/* core surpass element styles - basic functionality relies on these */
+
+.surpass_container {
+  display: flex;
+  position: relative;
+  flex-flow: row nowrap;
+}
+
+.surpass_container [hidden] {
+  display: none !important;
+}
+
+.surpass_input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+}
+
+.surpass_input-container > input {
+  flex: 1;
+  margin: 0;
+}
+
+.surpass_input-coverup {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+
+.surpass_masking-button {
+  position: relative;
+}
+
+.surpass_gross-simpl-spot {
+  border: none;
+  height: 1em; width: 1em;
+  position: absolute;
+  overflow: hidden;
+}
+
+.surpass_gross-simpl-pos0 {
+  top: 0; left: 0;
+}
+.surpass_gross-simpl-pos1 {
+  top: 50%; left: 25%;
+}
+.surpass_gross-simpl-pos2 {
+  top: 50%; left: 50%;
+}
+.surpass_gross-simpl-pos3 {
+  top: 50%; left: 75%;
+}
+
+.surpass_gross-simpl-round {
+  border-radius: 50%;
+}
+.surpass_gross-simpl-pointy {
+  border-radius: 0;
+}
+
+.surpass_gross-simpl-shape {
+  box-sizing: content-box;
+  height: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-width: 0;
+  border-style: solid;
+}
+.surpass_gross-simpl-block {
+  width: 1em;
+  border-bottom-width: 1em;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+.surpass_gross-simpl-tri {
+  width: 0;
+  border-bottom-width: .866em;
+  border-left-width: .5em;
+  border-right-width: .5em;
+}

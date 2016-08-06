@@ -1,0 +1,57 @@
+/* surpass theme styles - this is just aesthetics
+   though surpass_gross-simpl-[rby] need to stay (red|blue|yellow)ish
+   for color hints to remain useable */
+
+.surpass_gross-simpl-r {
+  border-bottom-color: #f00;
+}
+.surpass_gross-simpl-b {
+  border-bottom-color: #00f;
+}
+.surpass_gross-simpl-y {
+  border-bottom-color: #fc0;
+}
+
+.surpass_gross-simpl-dot {
+  border-bottom-color: #222;
+}
+
+.surpass_container {
+  border: 1px solid gray;
+  border-radius: 2px;
+}
+
+input {
+  border: 0;
+  font-family: monospace, monospace;
+}
+
+.surpass_input-coverup {
+  background: #000;
+}
+
+.surpass_button {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid black;
+  width: 25px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1em;
+  font-size: 20px;
+}
+
+.surpass_gross-simpl-spot {
+  font-size: 10px;
+  transition-property: top, left, border-radius, transform;
+  transition-duration: 0.25s;
+}
+
+.surpass_gross-simpl-shape {
+  transition-property: width, border-width, border-bottom-color;
+  transition-duration: 0.25s;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>surpass demo</title>
+    <link rel="stylesheet" href="surpass-core.css"></script>
+    <link rel="stylesheet" href="surpass-theming.css"></script>
+    <style>
+    html {
+      height: 100%;
+      margin: 0; padding: 0;
+    }
+    body {
+      height: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+    }
+    </style>
+    <script src="surpass.js"></script>
+  </head>
+  <body>
+    <input type="password" id="demo">
+    <script>
+      /*global surpass*/
+      surpass(document.getElementById('demo'));
+    </script>
+  </body>
+</html>

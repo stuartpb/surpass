@@ -25,7 +25,7 @@
   function grossSimplify(str) {
     return fnv1a(utf8Bytes(str)) % 144;
   }
-  var colorSets = ['rby', 'ryb', 'bry', 'byr', 'yrb', 'ybr'];
+  var colorSets = ['rgb', 'rbg', 'grb', 'gbr', 'brg', 'bgr'];
   var shapeSets = ['cts', 'cst', 'tcs', 'tsc', 'sct', 'stc'];
   var arrangements = ['t', 'r', 'b', 'l']; // clockwise from top aka CSS order
   function colorsShapesArrangement(grossIndex) {

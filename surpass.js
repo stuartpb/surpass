@@ -7,15 +7,15 @@
     root.surpass = factory();
   }
 }(this, function () {
-
-  // prime and offset for 32-bit FNV-1
   // http://www.isthe.com/chongo/tech/comp/fnv/index.html
-  var fnv1Prime = 16777619;
-  var fnv1OffsetBasis = 2166136261;
   function fnv1a(bytes) {
     return bytes.reduce(function fnv1aCore(hash, byte) {
-      return (hash ^ byte) * fnv1Prime;
-    }, fnv1OffsetBasis) >>> 0;
+      hash ^= byte;
+      // calculate hash * 16777619 in int32 high-end-overflow arithmetic,
+      // instead of JS's native floating-point low-end-rounding arithmetic
+      return hash + (hash << 1) + (hash << 4) +
+        (hash << 7) + (hash << 8) + (hash << 24);
+    }, 2166136261) >>> 0;
   }
   function utf8Bytes(str) {
     return unescape(encodeURIComponent(str)).split('').map(function (s) {

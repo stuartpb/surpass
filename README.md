@@ -18,6 +18,8 @@ Additionally, this configrable sensitivity should be available for *any* kind of
 
 ## Gross Simplification
 
+**Details not final.** This aspect of surpass is still experimental, and is subject to heavy changes as I gather more data about its operation going forward.
+
 Communicates the input state, a la Lotus's Hieroglyphics or Chroma-Hash, without exposing significant details of the password.
 
 - Doesn't show until the user has gone at least 1/3 second without typing

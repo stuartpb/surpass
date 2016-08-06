@@ -71,7 +71,8 @@
   teMaskingButton.className = namespaced('button masking-button');
   var teUnmaskedButton = teSurpassButton.cloneNode(teSurpassButton);
   teUnmaskedButton.className = namespaced('button unmasked-button');
-  teUnmaskedButton.textContent = decodeURIComponent('%F0%9F%91%81'); // eye
+  teUnmaskedButton.textContent =
+    decodeURIComponent('%F0%9F%91%81%EF%B8%8E'); // eye
 
   var teGrossSimplSpot = document.createElement('div');
   teGrossSimplSpot.className = namespaced(

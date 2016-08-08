@@ -107,15 +107,14 @@
 
     function updateGrossSimplification(value) {
       var csa = colorsShapesArrangement(grossSimplify(value));
+      var posPrefix = 'gross-simpl-' + csa.arrangement;
 
       for (var i = 0; i < 3; i++) {
         var spotEl = spots[i];
         var shapeEl = spotEl.children[0];
-        var arr = csa.arrangement;
         var color = csa.colors[i];
         var shape = csa.shapes[i];
-        spotEl.className = namespaced(['gross-simpl-spot',
-          'gross-simpl-' + arr + i,
+        spotEl.className = namespaced(['gross-simpl-spot', posPrefix + i,
           shape == 'c' ? 'gross-simpl-round' : 'gross-simpl-pointy']);
         shapeEl.className = namespaced(['gross-simpl-shape',
           shape == 't' ? 'gross-simpl-tri' : 'gross-simpl-block',

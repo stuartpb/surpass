@@ -39,20 +39,6 @@
     };
   }
 
-  // positions for shapes to move to, from left to right,
-  // by quarters of the available dimensions
-  var arrPositions = {
-    t: [[1,3], [2,1], [3,3]],
-    r: [[1,1], [1,3], [3,2]],
-    b: [[1,1], [2,3], [3,1]],
-    l: [[1,2], [3,1], [3,3]]
-  };
-
-  var eqTriHeight = Math.sqrt(3)/2;
-  var triHeightCompensation = (1 - eqTriHeight) / 2;
-
-  var dotTransform = 'scale(0.5)';
-
   function namespaced(classNames) {
     if (!Array.isArray(classNames)) {
       classNames = classNames.split(/\s+/g);
@@ -101,8 +87,7 @@
 
     for (var i = 0; i < 3; i++) {
       spots[i] = teGrossSimplSpot.cloneNode(true);
-      spots[i].style.transform = 'translate(-50%, -50%) ' + dotTransform;
-      spots[i].className += ' ' + namespaced('gross-simpl-pos'+(i+1));
+      spots[i].className += ' ' + namespaced('gross-simpl-x' + i);
       maskingButton.appendChild(spots[i]);
     }
 
@@ -122,26 +107,15 @@
 
     function updateGrossSimplification(value) {
       var csa = colorsShapesArrangement(grossSimplify(value));
-      var positions = arrPositions[csa.arrangement];
-
-      var xq = maskingButton.clientWidth / 4;
-      var yq = maskingButton.clientHeight / 4;
 
       for (var i = 0; i < 3; i++) {
         var spotEl = spots[i];
         var shapeEl = spotEl.children[0];
-        var pos = positions[i];
+        var arr = csa.arrangement;
         var color = csa.colors[i];
         var shape = csa.shapes[i];
-        var spotW = spotEl.clientWidth;
-        var x = xq * pos[0] - spotW / 2;
-        var y = yq * pos[1] - spotW / 2;
-        if (shape == 't') {
-          y += spotW * triHeightCompensation;
-        }
-        spotEl.style.transform = 'translate(' + x + 'px,' + y + 'px)';
         spotEl.className = namespaced(['gross-simpl-spot',
-          'gross-simpl-pos0',
+          'gross-simpl-' + arr + i,
           shape == 'c' ? 'gross-simpl-round' : 'gross-simpl-pointy']);
         shapeEl.className = namespaced(['gross-simpl-shape',
           shape == 't' ? 'gross-simpl-tri' : 'gross-simpl-block',

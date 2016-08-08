@@ -43,7 +43,7 @@
     r: [[1,1], [1,3], [3,2]],
     b: [[1,1], [2,3], [3,1]],
     l: [[1,2], [3,1], [3,3]]
-  }
+  };
 
   var eqTriHeight = Math.sqrt(3)/2;
   var triHeightCompensation = (1 - eqTriHeight) / 2;

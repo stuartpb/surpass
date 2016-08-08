@@ -23,7 +23,10 @@
     });
   }
   function grossSimplify(str) {
-    return fnv1a(utf8Bytes(str)) % 144;
+    var hash = fnv1a(utf8Bytes(str));
+    var high = hash >>> 16;
+    var low = hash & 0xffff;
+    return (high ^ low) % 144;
   }
   var colorSets = ['rgb', 'rbg', 'grb', 'gbr', 'brg', 'bgr'];
   var shapeSets = ['cts', 'cst', 'tcs', 'tsc', 'sct', 'stc'];

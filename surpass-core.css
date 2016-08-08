@@ -23,12 +23,24 @@
   margin: 0;
 }
 
-.surpass_input-coverup {
+.surpass_input-shroud {
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0; bottom: 0; right: 0;
+}
+.surpass_input-shroud-active {
+  left: 0;
+}
+.surpass_input-shroud-inactive {
+  left: 100%;
+}
+.surpass_input-shroud-empty {
+  opacity: .25;
+}
+.surpass_input-shroud.surpass_input-shroud-empty {
+  color: transparent;
 }
 
-.surpass_masking-button {
+.surpass_mask-button {
   position: relative;
 }
 

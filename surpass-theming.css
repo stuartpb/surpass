@@ -24,10 +24,22 @@
 input {
   border: 0;
   font-family: monospace, monospace;
+  padding: 0 .5ch;
 }
 
-.surpass_input-coverup {
+@keyframes surpass_blink-text {
+  50% {
+    color: transparent;
+  }
+}
+
+.surpass_input-shroud {
   background: #000;
+  color: #fff;
+  text-align: center;
+  line-height: 1.25;
+  transition: left 0.25s;
+  animation: surpass_blink-text 1s step-start 0s infinite;
 }
 
 .surpass_button {

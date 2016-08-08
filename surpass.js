@@ -54,14 +54,20 @@
   var teInputContainer = document.createElement('div');
   teInputContainer.className = namespaced('input-container');
   // the actual input gets added to the container in construction
+  var teInputShroud = document.createElement('div');
+  teInputShroud.className = namespaced('input-shroud');
 
   var teSurpassButton = document.createElement('button');
-  var teMaskingButton = teSurpassButton.cloneNode(teSurpassButton);
-  teMaskingButton.className = namespaced('button masking-button');
-  var teUnmaskedButton = teSurpassButton.cloneNode(teSurpassButton);
-  teUnmaskedButton.className = namespaced('button unmasked-button');
-  teUnmaskedButton.textContent =
+  var teMaskModeButton = teSurpassButton.cloneNode(teSurpassButton);
+  teMaskModeButton.className = namespaced('button mask-button');
+  var teExposeModeButton = teSurpassButton.cloneNode(teSurpassButton);
+  teExposeModeButton.className = namespaced('button expose-button');
+  teExposeModeButton.textContent =
     decodeURIComponent('%F0%9F%91%81%EF%B8%8E'); // eye
+  var teShroudModeButton = teSurpassButton.cloneNode(teSurpassButton);
+  teShroudModeButton.className = namespaced('button shroud-button');
+  teShroudModeButton.textContent =
+    decodeURIComponent("%E2%97%BC%EF%B8%8F"); // black square
 
   var teGrossSimplSpot = document.createElement('div');
   teGrossSimplSpot.className = namespaced(
@@ -74,36 +80,73 @@
   return function surpass(baseInput, opts) {
     // TODO: verify that `baseInput` is, in fact, a (password) input
     opts = opts || {};
-    opts.mode = opts.mode ||
+    var mode = opts.mode ||
       baseInput.type == 'password' ? 'masked' : 'clear';
 
     var container = teSurpassContainer.cloneNode(false);
     var inputContainer = teInputContainer.cloneNode(false);
     container.appendChild(inputContainer);
 
-    var maskingButton = teMaskingButton.cloneNode(false);
+    var inputShroud = teInputShroud.cloneNode(false);
+    var shroudModeButton = teShroudModeButton.cloneNode(true);
+
+    var activeShroudClass = namespaced("input-shroud-active");
+    var inactiveShroudClass = namespaced("input-shroud-inactive");
+    var emptyShroudClass = namespaced("input-shroud-empty");
+
+    if (mode == 'shroud') {
+      inputShroud.classList.add(activeShroudClass);
+    } else {
+      inputShroud.classList.add(inactiveShroudClass);
+    }
+
+    inputShroud.addEventListener('click', function(evt) {
+      baseInput.focus();
+    });
+
+    shroudModeButton.addEventListener('click', function(evt) {
+      // TODO: move to masked mode if clicked in shroud mode
+      inputShroud.classList.remove(inactiveShroudClass);
+      inputShroud.classList.add(activeShroudClass);
+      if (baseInput.value == '') {
+        inputShroud.classList.add(emptyShroudClass);
+      } else {
+        inputShroud.classList.remove(emptyShroudClass);
+      }
+      baseInput.type = 'password';
+      baseInput.focus();
+    });
+
+    container.appendChild(shroudModeButton);
+
+    var maskModeButton = teMaskModeButton.cloneNode(false);
 
     var spots = [];
 
     for (var i = 0; i < 3; i++) {
       spots[i] = teGrossSimplSpot.cloneNode(true);
       spots[i].className += ' ' + namespaced('gross-simpl-x' + i);
-      maskingButton.appendChild(spots[i]);
+      maskModeButton.appendChild(spots[i]);
     }
 
-    maskingButton.addEventListener('click', function(evt) {
+    maskModeButton.addEventListener('click', function(evt) {
+      inputShroud.classList.remove(activeShroudClass);
+      inputShroud.classList.add(inactiveShroudClass);
       baseInput.type = 'password';
     });
 
-    container.appendChild(maskingButton);
+    container.appendChild(maskModeButton);
 
-    var unmaskedButton = teUnmaskedButton.cloneNode(true);
+    var exposeModeButton = teExposeModeButton.cloneNode(true);
 
-    unmaskedButton.addEventListener('click', function(evt) {
+    exposeModeButton.addEventListener('click', function(evt) {
+      // TODO: move to masked mode if clicked in expose mode
+      inputShroud.classList.remove(activeShroudClass);
+      inputShroud.classList.add(inactiveShroudClass);
       baseInput.type = 'text';
     });
 
-    container.appendChild(unmaskedButton);
+    container.appendChild(exposeModeButton);
 
     function updateGrossSimplification(value) {
       var csa = colorsShapesArrangement(grossSimplify(value));
@@ -123,12 +166,27 @@
     }
 
     baseInput.addEventListener('input', function(evt) {
-      // TODO: get clever with animation / timeouts
+      var value = baseInput.value;
+      if (value == '') {
+        inputShroud.classList.add(emptyShroudClass);
+      } else {
+        inputShroud.classList.remove(emptyShroudClass);
+      }
+      // TODO: get clever with animation / timeouts / modality respect
       updateGrossSimplification(baseInput.value);
+    });
+
+    baseInput.addEventListener('focus', function(evt) {
+      inputShroud.textContent = '|';
+    });
+
+    baseInput.addEventListener('blur', function(evt) {
+      inputShroud.textContent = '';
     });
 
     baseInput.parentNode.replaceChild(container, baseInput);
     inputContainer.appendChild(baseInput);
+    inputContainer.appendChild(inputShroud);
     return container;
   };
 }));

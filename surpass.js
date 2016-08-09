@@ -48,29 +48,14 @@
     }).join(' ');
   }
 
-  function stateMachine(initState) {
-    var exitState = initState && initState();
-    return function stateTransition(enterState) {
-      if (exitState) exitState();
-      exitState = enterState && enterState();
-    };
-  }
-
   function elementClassState(el, className) {
-    return function addClass() {
-      el.classList.add(className);
-      return function removeClass() {
-        el.classList.remove(className);
-      };
-    };
-  }
-
-  function invElementClassState(el, className) {
-    return function removeClass() {
-      el.classList.remove(className);
-      return function addClass() {
+    return {
+      enter: function addClass() {
         el.classList.add(className);
-      };
+      },
+      exit: function removeClass() {
+        el.classList.remove(className);
+      }
     };
   }
 
@@ -95,36 +80,19 @@
   teShroudModeButton.textContent =
     decodeURIComponent("%E2%97%BC%EF%B8%8F"); // black square
 
-  var teGrossSimplSpot = document.createElement('div');
-  teGrossSimplSpot.className = namespaced(
-    'gross-simpl-spot gross-simpl-round');
-  var teGrossSimplShape = document.createElement('div');
-  teGrossSimplShape.className = namespaced(
+  var maskSpotClassPrefix = namespaced(
+    'gross-simpl-spot gross-simpl-round gross-simpl-x');
+  var maskDotShapeClassName = namespaced(
     'gross-simpl-shape gross-simpl-block gross-simpl-dot');
+
+  var teGrossSimplSpot = document.createElement('div');
+  var teGrossSimplShape = document.createElement('div');
+  teGrossSimplShape.className = maskDotShapeClassName;
   teGrossSimplSpot.appendChild(teGrossSimplShape);
 
   return function surpass(baseInput, opts) {
     // TODO: verify that `baseInput` is, in fact, a (password) input
     opts = opts || {};
-    var mode = opts.mode ||
-      baseInput.type == 'password' ? 'mask' : 'expose';
-
-    function namedMode(name, substates) {
-      function call(f) {
-        return f && f();
-      }
-      return function() {
-        mode = name;
-        var substateExits = substates.map(call);
-        return function exitSubstates() {
-          return substateExits.forEach(call);
-        };
-      };
-    }
-
-    function setBaseInputType(type) {
-      baseInput.type = type;
-    }
 
     var container = teSurpassContainer.cloneNode(false);
     var inputContainer = teInputContainer.cloneNode(false);
@@ -139,62 +107,86 @@
       inputShroud, namespaced("input-shroud-inactive"));
     var emptyShroudClass = namespaced("input-shroud-empty");
 
-    var shroudMode = namedMode('shroud', [
-      shroudActiveState,
-      setBaseInputType.bind(null,'password'),
-      function () {
-        for (var i = 0; i < 3; i++) {
-          spots[i].className =
-            namespaced('gross-simpl-spot gross-simpl-round gross-simpl-x' + i);
-          spots[i].children[0].className = teGrossSimplShape.className;
+    var maskModeButton = teMaskModeButton.cloneNode(false);
+
+    var spots = [];
+    for (var i = 0; i < 3; i++) {
+      spots[i] = teGrossSimplSpot.cloneNode(true);
+      spots[i].className = maskSpotClassPrefix + i;
+      maskModeButton.appendChild(spots[i]);
+    }
+
+    function setMaskButtonDots() {
+      for (var i = 0; i < 3; i++) {
+        spots[i].className = maskSpotClassPrefix + i;
+        spots[i].children[0].className = maskDotShapeClassName;
+      }
+    }
+
+    function setBaseInputTypeState(type) {
+      return {enter: function() {
+        baseInput.type = type;
+      }};
+    }
+
+    function updateShroudEmptiness() {
+      if (baseInput.value == '') {
+        inputShroud.classList.add(emptyShroudClass);
+      } else {
+        inputShroud.classList.remove(emptyShroudClass);
+      }
+    }
+
+    var modeSubstates = {
+      shroud: [
+        shroudActiveState,
+        setBaseInputTypeState('password'),
+        {enter: setMaskButtonDots},
+        {enter: updateShroudEmptiness}
+      ],
+      mask: [
+        shroudInactiveState,
+        setBaseInputTypeState('password')
+      ],
+      expose: [
+        shroudInactiveState,
+        setBaseInputTypeState('text')
+      ]
+    };
+    var mode;
+    function setMode(newMode) {
+      var i;
+      function runOrNop(f) {
+        if (f) f();
+      }
+      if (mode) {
+        var oldSubstates = modeSubstates[mode];
+        for (i = 0; i < oldSubstates.length; i++) {
+          runOrNop(oldSubstates[i].exit);
         }
       }
-    ]);
-    var maskMode = namedMode('mask', [
-      shroudInactiveState,
-      setBaseInputType.bind(null,'password')
-    ]);
-    var exposeMode = namedMode('expose', [
-      shroudInactiveState,
-      setBaseInputType.bind(null,'text')
-    ]);
-    var surpassStateMachine = stateMachine(
-      mode == 'shroud' ? shroudMode :
-      mode == 'expose' ? exposeMode :
-      maskMode);
+      var newSubstates = modeSubstates[newMode];
+      for (i = 0; i < newSubstates.length; i++) {
+        runOrNop(newSubstates[i].enter);
+      }
+      mode = newMode;
+    }
+    setMode(opts.mode ||
+      baseInput.type == 'password' ? 'mask' : 'expose');
 
     inputShroud.addEventListener('click', function(evt) {
       baseInput.focus();
     });
 
     shroudModeButton.addEventListener('click', function(evt) {
-      if (mode == 'shroud') {
-        surpassStateMachine(maskMode);
-      } else {
-        surpassStateMachine(shroudMode);
-      }
-      if (baseInput.value == '') {
-        inputShroud.classList.add(emptyShroudClass);
-      } else {
-        inputShroud.classList.remove(emptyShroudClass);
-      }
+      setMode(mode == 'shroud' ? 'mask' : 'shroud');
       baseInput.focus();
     });
 
     container.appendChild(shroudModeButton);
 
-    var maskModeButton = teMaskModeButton.cloneNode(false);
-
-    var spots = [];
-
-    for (var i = 0; i < 3; i++) {
-      spots[i] = teGrossSimplSpot.cloneNode(true);
-      spots[i].className += ' ' + namespaced('gross-simpl-x' + i);
-      maskModeButton.appendChild(spots[i]);
-    }
-
     maskModeButton.addEventListener('click', function(evt) {
-      surpassStateMachine(maskMode);
+      setMode('mask');
     });
 
     container.appendChild(maskModeButton);
@@ -202,16 +194,13 @@
     var exposeModeButton = teExposeModeButton.cloneNode(true);
 
     exposeModeButton.addEventListener('click', function(evt) {
-      if (mode == 'expose') {
-        surpassStateMachine(maskMode);
-      } else {
-        surpassStateMachine(exposeMode);
-      }
+      setMode(mode == 'expose' ? 'mask' : 'expose');
     });
 
     container.appendChild(exposeModeButton);
 
-    function updateGrossSimplification(value) {
+    function updateGrossSimplification() {
+      var value = baseInput.value;
       var csa = colorsShapesArrangement(grossSimplify(value));
       var posPrefix = 'gross-simpl-' + csa.arrangement;
 
@@ -229,15 +218,11 @@
     }
 
     baseInput.addEventListener('input', function(evt) {
+      updateShroudEmptiness();
       var value = baseInput.value;
-      if (value == '') {
-        inputShroud.classList.add(emptyShroudClass);
-      } else {
-        inputShroud.classList.remove(emptyShroudClass);
-      }
       // TODO: get clever with animation / timeouts / modality respect
       if (mode != 'shroud') {
-        updateGrossSimplification(baseInput.value);
+        updateGrossSimplification(value);
       }
     });
 

@@ -48,6 +48,32 @@
     }).join(' ');
   }
 
+  function stateMachine(initState) {
+    var exitState = initState && initState();
+    return function stateTransition(enterState) {
+      if (exitState) exitState();
+      exitState = enterState && enterState();
+    };
+  }
+
+  function elementClassState(el, className) {
+    return function addClass() {
+      el.classList.add(className);
+      return function removeClass() {
+        el.classList.remove(className);
+      };
+    };
+  }
+
+  function invElementClassState(el, className) {
+    return function removeClass() {
+      el.classList.remove(className);
+      return function addClass() {
+        el.classList.add(className);
+      };
+    };
+  }
+
   var teSurpassContainer = document.createElement('div');
   teSurpassContainer.className = namespaced('container');
 
@@ -81,7 +107,24 @@
     // TODO: verify that `baseInput` is, in fact, a (password) input
     opts = opts || {};
     var mode = opts.mode ||
-      baseInput.type == 'password' ? 'masked' : 'clear';
+      baseInput.type == 'password' ? 'mask' : 'expose';
+
+    function namedMode(name, substates) {
+      function call(f) {
+        return f && f();
+      }
+      return function() {
+        mode = name;
+        var substateExits = substates.map(call);
+        return function exitSubstates() {
+          return substateExits.forEach(call);
+        };
+      };
+    }
+
+    function setBaseInputType(type) {
+      baseInput.type = type;
+    }
 
     var container = teSurpassContainer.cloneNode(false);
     var inputContainer = teInputContainer.cloneNode(false);
@@ -90,30 +133,51 @@
     var inputShroud = teInputShroud.cloneNode(false);
     var shroudModeButton = teShroudModeButton.cloneNode(true);
 
-    var activeShroudClass = namespaced("input-shroud-active");
-    var inactiveShroudClass = namespaced("input-shroud-inactive");
+    var shroudActiveState = elementClassState(
+      inputShroud, namespaced("input-shroud-active"));
+    var shroudInactiveState = elementClassState(
+      inputShroud, namespaced("input-shroud-inactive"));
     var emptyShroudClass = namespaced("input-shroud-empty");
 
-    if (mode == 'shroud') {
-      inputShroud.classList.add(activeShroudClass);
-    } else {
-      inputShroud.classList.add(inactiveShroudClass);
-    }
+    var shroudMode = namedMode('shroud', [
+      shroudActiveState,
+      setBaseInputType.bind(null,'password'),
+      function () {
+        for (var i = 0; i < 3; i++) {
+          spots[i].className =
+            namespaced('gross-simpl-spot gross-simpl-round gross-simpl-x' + i);
+          spots[i].children[0].className = teGrossSimplShape.className;
+        }
+      }
+    ]);
+    var maskMode = namedMode('mask', [
+      shroudInactiveState,
+      setBaseInputType.bind(null,'password')
+    ]);
+    var exposeMode = namedMode('expose', [
+      shroudInactiveState,
+      setBaseInputType.bind(null,'text')
+    ]);
+    var surpassStateMachine = stateMachine(
+      mode == 'shroud' ? shroudMode :
+      mode == 'expose' ? exposeMode :
+      maskMode);
 
     inputShroud.addEventListener('click', function(evt) {
       baseInput.focus();
     });
 
     shroudModeButton.addEventListener('click', function(evt) {
-      // TODO: move to masked mode if clicked in shroud mode
-      inputShroud.classList.remove(inactiveShroudClass);
-      inputShroud.classList.add(activeShroudClass);
+      if (mode == 'shroud') {
+        surpassStateMachine(maskMode);
+      } else {
+        surpassStateMachine(shroudMode);
+      }
       if (baseInput.value == '') {
         inputShroud.classList.add(emptyShroudClass);
       } else {
         inputShroud.classList.remove(emptyShroudClass);
       }
-      baseInput.type = 'password';
       baseInput.focus();
     });
 
@@ -130,9 +194,7 @@
     }
 
     maskModeButton.addEventListener('click', function(evt) {
-      inputShroud.classList.remove(activeShroudClass);
-      inputShroud.classList.add(inactiveShroudClass);
-      baseInput.type = 'password';
+      surpassStateMachine(maskMode);
     });
 
     container.appendChild(maskModeButton);
@@ -140,10 +202,11 @@
     var exposeModeButton = teExposeModeButton.cloneNode(true);
 
     exposeModeButton.addEventListener('click', function(evt) {
-      // TODO: move to masked mode if clicked in expose mode
-      inputShroud.classList.remove(activeShroudClass);
-      inputShroud.classList.add(inactiveShroudClass);
-      baseInput.type = 'text';
+      if (mode == 'expose') {
+        surpassStateMachine(maskMode);
+      } else {
+        surpassStateMachine(exposeMode);
+      }
     });
 
     container.appendChild(exposeModeButton);
@@ -173,7 +236,9 @@
         inputShroud.classList.remove(emptyShroudClass);
       }
       // TODO: get clever with animation / timeouts / modality respect
-      updateGrossSimplification(baseInput.value);
+      if (mode != 'shroud') {
+        updateGrossSimplification(baseInput.value);
+      }
     });
 
     baseInput.addEventListener('focus', function(evt) {

@@ -38,7 +38,7 @@ input {
   color: #fff;
   text-align: center;
   line-height: 1.25;
-  transition: left 0.25s;
+  transition: bottom 0.25s;
   animation: surpass_blink-text 1s step-start 0s infinite;
 }
 

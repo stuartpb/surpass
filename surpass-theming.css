@@ -33,6 +33,35 @@ input {
   }
 }
 
+@keyframes surpass_dot-dance {
+  25% {
+    top: 40%;
+  }
+  50% {
+    top: 55%;
+  }
+  55% {
+    top: 50%;
+  }
+}
+
+.surpass_mask-button-typing .surpass_gross-simpl-spot {
+  animation-name: surpass_dot-dance;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+.surpass_mask-button-typing .surpass_gross-simpl-x0 {
+  animation-delay: 0s;
+
+}
+.surpass_mask-button-typing .surpass_gross-simpl-x1 {
+  animation-delay: .25s;
+}
+.surpass_mask-button-typing .surpass_gross-simpl-x2 {
+  animation-delay: .5s;
+}
+
 .surpass_input-shroud {
   background: #000;
   color: #fff;

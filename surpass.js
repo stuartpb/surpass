@@ -107,6 +107,8 @@
       inputShroud, namespaced("input-shroud-inactive"));
     var emptyShroudClass = namespaced("input-shroud-empty");
 
+    var maskedTypingClassName = namespaced("mask-button-typing");
+
     var maskModeButton = teMaskModeButton.cloneNode(false);
 
     var spots = [];
@@ -121,6 +123,56 @@
         spots[i].className = maskSpotClassPrefix + i;
         spots[i].children[0].className = maskDotShapeClassName;
       }
+    }
+
+    function updateGrossSimplification() {
+      var value = baseInput.value;
+
+      // don't display the empty-string simplification
+      if (value == '') {
+        return setMaskButtonDots();
+      }
+
+      var csa = colorsShapesArrangement(grossSimplify(value));
+      var posPrefix = 'gross-simpl-' + csa.arrangement;
+
+      for (var i = 0; i < 3; i++) {
+        var spotEl = spots[i];
+        var shapeEl = spotEl.children[0];
+        var color = csa.colors[i];
+        var shape = csa.shapes[i];
+        spotEl.className = namespaced(['gross-simpl-spot', posPrefix + i,
+          shape == 'c' ? 'gross-simpl-round' : 'gross-simpl-pointy']);
+        shapeEl.className = namespaced(['gross-simpl-shape',
+          shape == 't' ? 'gross-simpl-tri' : 'gross-simpl-block',
+          'gross-simpl-' + color]);
+      }
+    }
+
+    // TODO: make this configurable
+    var typingTime = 1000;
+    var grossSimplificationTimeout = null;
+    function stopGrossSimplificationTimeout() {
+      if (grossSimplificationTimeout) {
+        maskModeButton.classList.remove(maskedTypingClassName);
+        clearTimeout(grossSimplificationTimeout);
+        grossSimplificationTimeout = null;
+      }
+    }
+    function finishGrossSimplificationTimeout() {
+      maskModeButton.classList.remove(maskedTypingClassName);
+      grossSimplificationTimeout = null;
+      updateGrossSimplification();
+    }
+    function bumpGrossSimplificationTimeout() {
+      if (grossSimplificationTimeout) {
+        clearTimeout(grossSimplificationTimeout);
+      } else {
+        setMaskButtonDots();
+        maskModeButton.classList.add(maskedTypingClassName);
+      }
+      grossSimplificationTimeout = setTimeout(
+        finishGrossSimplificationTimeout, typingTime);
     }
 
     function setBaseInputTypeState(type) {
@@ -142,15 +194,23 @@
         shroudActiveState,
         setBaseInputTypeState('password'),
         {enter: setMaskButtonDots},
+        {enter: stopGrossSimplificationTimeout},
         {enter: updateShroudEmptiness}
       ],
       mask: [
         shroudInactiveState,
-        setBaseInputTypeState('password')
+        setBaseInputTypeState('password'),
+        {enter: function () {
+          if (mode == 'shroud' && baseInput.value != '') {
+            bumpGrossSimplificationTimeout();
+          }
+        }}
       ],
       expose: [
         shroudInactiveState,
-        setBaseInputTypeState('text')
+        setBaseInputTypeState('text'),
+        {enter: stopGrossSimplificationTimeout},
+        {enter: updateGrossSimplification}
       ]
     };
     var mode;
@@ -199,30 +259,18 @@
 
     container.appendChild(exposeModeButton);
 
-    function updateGrossSimplification() {
-      var value = baseInput.value;
-      var csa = colorsShapesArrangement(grossSimplify(value));
-      var posPrefix = 'gross-simpl-' + csa.arrangement;
-
-      for (var i = 0; i < 3; i++) {
-        var spotEl = spots[i];
-        var shapeEl = spotEl.children[0];
-        var color = csa.colors[i];
-        var shape = csa.shapes[i];
-        spotEl.className = namespaced(['gross-simpl-spot', posPrefix + i,
-          shape == 'c' ? 'gross-simpl-round' : 'gross-simpl-pointy']);
-        shapeEl.className = namespaced(['gross-simpl-shape',
-          shape == 't' ? 'gross-simpl-tri' : 'gross-simpl-block',
-          'gross-simpl-' + color]);
-      }
-    }
-
     baseInput.addEventListener('input', function(evt) {
       updateShroudEmptiness();
-      var value = baseInput.value;
-      // TODO: get clever with animation / timeouts / modality respect
-      if (mode != 'shroud') {
-        updateGrossSimplification(value);
+      if (mode == 'mask') {
+        if (baseInput.value != '') {
+          bumpGrossSimplificationTimeout();
+        } else {
+          stopGrossSimplificationTimeout();
+          setMaskButtonDots();
+        }
+      } else if (mode == 'expose') {
+        // update gross simplification without delay when exposing
+        updateGrossSimplification();
       }
     });
 

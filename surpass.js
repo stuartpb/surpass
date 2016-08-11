@@ -149,8 +149,7 @@
       }
     }
 
-    // TODO: make this configurable
-    var typingTime = 500;
+    var typingWait = (opts.typingWait === 0 ? 0 : opts.typingWait || 500);
     var grossSimplificationTimeout = null;
     function stopGrossSimplificationTimeout() {
       if (grossSimplificationTimeout) {
@@ -172,7 +171,7 @@
         maskModeButton.classList.add(maskedTypingClassName);
       }
       grossSimplificationTimeout = setTimeout(
-        finishGrossSimplificationTimeout, typingTime);
+        finishGrossSimplificationTimeout, typingWait);
     }
 
     function setBaseInputTypeState(type) {

@@ -150,7 +150,7 @@
     }
 
     // TODO: make this configurable
-    var typingTime = 1000;
+    var typingTime = 500;
     var grossSimplificationTimeout = null;
     function stopGrossSimplificationTimeout() {
       if (grossSimplificationTimeout) {

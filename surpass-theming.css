@@ -36,8 +36,8 @@
   transform: rotate(-90deg);
 }
 .surpass_check-available {
-  color: #55b;
-  background-color: #eef;
+  color: #555;
+  background-color: #eee;
 }
 .surpass_check-prompting {
   color: #882;

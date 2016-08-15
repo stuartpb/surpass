@@ -1,13 +1,22 @@
 /* core surpass element styles - basic functionality relies on these */
 
-.surpass_container {
+.surpass_row {
   display: flex;
   position: relative;
   flex-flow: row nowrap;
 }
 
-.surpass_container [hidden] {
-  display: none !important;
+.surpass_container {
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+}
+
+.surpass_check-row[hidden] {
+  visibility: hidden;
+  height: 0;
+  border: 0 solid;
+  transition: visibility step-end .25s, height .25s, border .25s;
 }
 
 .surpass_input-container {

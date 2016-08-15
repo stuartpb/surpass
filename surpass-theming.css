@@ -21,6 +21,27 @@
   border-radius: 2px;
 }
 
+.surpass_check-state {
+  transition-property: color, background-color;
+  transition-duration: .25s;
+}
+.surpass_check-available {
+  color: #55b;
+  background-color: #eef;
+}
+.surpass_check-prompting {
+  color: #882;
+  background-color: #ffc;
+}
+.surpass_check-unmatching {
+  color: #822;
+  background-color: #fcc;
+}
+.surpass_check-matching {
+  color: #282;
+  background-color: #cfc;
+}
+
 input {
   border: 0;
   font-family: monospace, monospace;
@@ -71,7 +92,7 @@ input {
   animation: surpass_blink-text 1s step-start 0s infinite;
 }
 
-.surpass_button {
+.surpass_mode-button {
   background: #fff;
   margin: 0;
   padding: 0;
@@ -84,6 +105,25 @@ input {
   justify-content: center;
   line-height: 1em;
   font-size: 20px;
+}
+
+.surpass_double-toggle-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid black;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: 1em;
+  font-size: 20px;
+}
+.surpass_check-row {
+  border-top: 1px solid black;
+  height: 24px;
+  transition-property: height, border;
+  transition-duration: 0.25s;
 }
 
 .surpass_gross-simpl-spot {

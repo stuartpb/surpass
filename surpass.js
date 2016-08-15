@@ -82,6 +82,7 @@
   teInputShroud.className = namespaced('input-shroud');
 
   var teSurpassButton = document.createElement('button');
+  teSurpassButton.type = 'button';
   var teMaskModeButton = teSurpassButton.cloneNode(false);
   teMaskModeButton.className = namespaced('mode-button mask-button');
   var teExposeModeButton = teSurpassButton.cloneNode(false);

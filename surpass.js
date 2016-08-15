@@ -134,11 +134,26 @@
       }
     }
 
+    var typingWait = opts.typingWait;
+    var grossSimplificationTimeout = null;
+    function stopGrossSimplificationTimeout() {
+      if (grossSimplificationTimeout) {
+        maskModeButton.classList.remove(maskedTypingClassName);
+        clearTimeout(grossSimplificationTimeout);
+        grossSimplificationTimeout = null;
+      }
+    }
     function updateGrossSimplification() {
       var value = baseInput.value;
 
-      // don't display the empty-string simplification
-      if (value == '') {
+      // ensure we're out of typing-mode
+      // (for when this is called early, eg. when double-checking
+      // and the string matches)
+      stopGrossSimplificationTimeout();
+
+      // don't display the empty-string simplification,
+      // or when shrouded
+      if (value == '' || mode == 'shroud') {
         return setMaskButtonDots();
       }
 
@@ -158,15 +173,6 @@
       }
     }
 
-    var typingWait = opts.typingWait;
-    var grossSimplificationTimeout = null;
-    function stopGrossSimplificationTimeout() {
-      if (grossSimplificationTimeout) {
-        maskModeButton.classList.remove(maskedTypingClassName);
-        clearTimeout(grossSimplificationTimeout);
-        grossSimplificationTimeout = null;
-      }
-    }
     function finishGrossSimplificationTimeout() {
       maskModeButton.classList.remove(maskedTypingClassName);
       grossSimplificationTimeout = null;
@@ -299,7 +305,8 @@
     return {
       container: container,
       inputContainer: inputContainer,
-      setMode: setMode
+      setMode: setMode,
+      updateGrossSimplification: updateGrossSimplification
     };
   }
 
@@ -344,6 +351,13 @@
           setDoubleCheckState('prompting');
         } else if (baseValue == checkValue) {
           setDoubleCheckState('matching');
+
+          // jump the queue on showing shapes
+          if (document.activeElement == baseInput) {
+            baseRow.updateGrossSimplification();
+          } else if (document.activeElement == checkInput) {
+            checkRow.updateGrossSimplification();
+          }
         } else {
           setDoubleCheckState('unmatching');
         }
@@ -354,10 +368,16 @@
     function toggleDoubleChecking() {
       doubleChecking = !doubleChecking;
       if (doubleChecking) {
+
+
         checkRow.container.hidden = false;
-        checkInput.value = '';
+
         updateDoubleCheckState();
       } else {
+        // clear the input and update its state
+        checkInput.value = '';
+        checkRow.updateGrossSimplification();
+        // hide the input and return to ad
         checkRow.container.hidden = true;
         setDoubleCheckState('available');
       }

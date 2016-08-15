@@ -322,7 +322,7 @@
 
     // TODO: make these configurable etc.
     var checkMessages = {
-      available: '\u21c5 \u2026',
+      available: '\u21c5',
       prompting: '\u21c5 \u2026',
       unmatching: '\u21c5 \u2260',
       matching: '\u21c5 ='

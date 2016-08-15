@@ -355,7 +355,7 @@
       doubleChecking = !doubleChecking;
       if (doubleChecking) {
         checkRow.container.hidden = false;
-        // TODO: clear previous checked value?
+        checkInput.value = '';
         updateDoubleCheckState();
       } else {
         checkRow.container.hidden = true;

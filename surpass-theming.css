@@ -22,8 +22,18 @@
 }
 
 .surpass_check-state {
-  transition-property: color, background-color;
+  transition-property: color;
   transition-duration: .25s;
+}
+.surpass_check-state::before {
+  content: '\25bc';
+  display: inline-block;
+  margin: 0 .5ch;
+  transition-property: transform;
+  transition-duration: .25s;
+}
+.surpass_check-available .surpass_check-state::before {
+  transform: rotate(-90deg);
 }
 .surpass_check-available {
   color: #55b;
@@ -118,6 +128,8 @@ input {
   justify-content: flex-start;
   line-height: 1em;
   font-size: 14px;
+  transition-property: background-color;
+  transition-duration: .25s;
 }
 .surpass_check-row {
   border-top: 1px solid black;

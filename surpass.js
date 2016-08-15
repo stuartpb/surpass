@@ -63,8 +63,6 @@
     eye: decodeURIComponent("%F0%9F%91%81%EF%B8%8E"),
     blackSquare: decodeURIComponent("%E2%97%BC%EF%B8%8F"),
     check: decodeURIComponent("%E2%9C%94%EF%B8%8F"),
-    rightTri: decodeURIComponent("%E2%96%B6%EF%B8%8F"),
-    downTri: decodeURIComponent("%E2%96%BC"),
     notEqual: decodeURIComponent("%E2%89%A0"),
     arrows: decodeURIComponent("%E2%87%85")
   };
@@ -92,9 +90,10 @@
   teShroudModeButton.className = namespaced('mode-button shroud-button');
   teShroudModeButton.textContent = glyphs.blackSquare;
   var teToggleDoubleButton = teBaseButton.cloneNode(false);
-  var toggleButtonBaseClassName =
-    namespaced('double-toggle-button check-state');
+  var toggleButtonBaseClassName = namespaced('double-toggle-button');
   teToggleDoubleButton.className = toggleButtonBaseClassName;
+  var teCheckStateDisplay = document.createElement('div');
+  teCheckStateDisplay.className = namespaced('check-state');
 
   var maskSpotClassPrefix = namespaced(
     'gross-simpl-spot gross-simpl-round gross-simpl-x');
@@ -327,18 +326,20 @@
     // TODO: make these configurable etc.
     var checkMessages = {
       available:
-        [glyphs.rightTri, glyphs.check, glyphs.check, '?'].join(' '),
+        [glyphs.check, glyphs.check, '?'].join(' '),
       prompting:
-        [glyphs.downTri, glyphs.arrows, '_'].join(' '),
+        [glyphs.arrows, '_'].join(' '),
       unmatching:
-        [glyphs.downTri, glyphs.arrows, glyphs.notEqual].join(' '),
+        [glyphs.arrows, glyphs.notEqual].join(' '),
       matching:
-        [glyphs.downTri, glyphs.arrows, '='].join(' ')
+        [glyphs.arrows, '='].join(' ')
     };
 
     var toggleButton = teToggleDoubleButton.cloneNode(false);
+    var checkStateDisplay = teCheckStateDisplay.cloneNode(false);
+    toggleButton.appendChild(checkStateDisplay);
     function setDoubleCheckState(stateName) {
-      toggleButton.textContent = checkMessages[stateName];
+      checkStateDisplay.textContent = checkMessages[stateName];
       toggleButton.className = toggleButtonBaseClassName + ' ' +
         namespaced('check-' + stateName);
     }

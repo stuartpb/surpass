@@ -81,17 +81,17 @@
   var teInputShroud = document.createElement('div');
   teInputShroud.className = namespaced('input-shroud');
 
-  var teSurpassButton = document.createElement('button');
-  teSurpassButton.type = 'button';
-  var teMaskModeButton = teSurpassButton.cloneNode(false);
+  var teBaseButton = document.createElement('button');
+  teBaseButton.type = 'button';
+  var teMaskModeButton = teBaseButton.cloneNode(false);
   teMaskModeButton.className = namespaced('mode-button mask-button');
-  var teExposeModeButton = teSurpassButton.cloneNode(false);
+  var teExposeModeButton = teBaseButton.cloneNode(false);
   teExposeModeButton.className = namespaced('mode-button expose-button');
   teExposeModeButton.textContent = glyphs.eye;
-  var teShroudModeButton = teSurpassButton.cloneNode(false);
+  var teShroudModeButton = teBaseButton.cloneNode(false);
   teShroudModeButton.className = namespaced('mode-button shroud-button');
   teShroudModeButton.textContent = glyphs.blackSquare;
-  var teToggleDoubleButton = teSurpassButton.cloneNode(false);
+  var teToggleDoubleButton = teBaseButton.cloneNode(false);
   var toggleButtonBaseClassName =
     namespaced('double-toggle-button check-state');
   teToggleDoubleButton.className = toggleButtonBaseClassName;

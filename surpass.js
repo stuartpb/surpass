@@ -62,9 +62,6 @@
   var glyphs = {
     eye: decodeURIComponent("%F0%9F%91%81%EF%B8%8E"),
     blackSquare: decodeURIComponent("%E2%97%BC%EF%B8%8F"),
-    check: decodeURIComponent("%E2%9C%94%EF%B8%8F"),
-    notEqual: decodeURIComponent("%E2%89%A0"),
-    arrows: decodeURIComponent("%E2%87%85")
   };
 
   var teSurpassContainer = document.createElement('div');
@@ -325,14 +322,10 @@
 
     // TODO: make these configurable etc.
     var checkMessages = {
-      available:
-        [glyphs.check, glyphs.check, '?'].join(' '),
-      prompting:
-        [glyphs.arrows, '_'].join(' '),
-      unmatching:
-        [glyphs.arrows, glyphs.notEqual].join(' '),
-      matching:
-        [glyphs.arrows, '='].join(' ')
+      available: '\u21c5 \u2026',
+      prompting: '\u21c5 \u2026',
+      unmatching: '\u21c5 \u2260',
+      matching: '\u21c5 ='
     };
 
     var toggleButton = teToggleDoubleButton.cloneNode(false);

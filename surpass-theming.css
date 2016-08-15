@@ -112,12 +112,12 @@ input {
   padding: 0;
   border: 0;
   border-top: 1px solid black;
-  height: 25px;
+  height: 19px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   line-height: 1em;
-  font-size: 20px;
+  font-size: 14px;
 }
 .surpass_check-row {
   border-top: 1px solid black;

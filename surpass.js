@@ -86,11 +86,14 @@
   var teShroudModeButton = teBaseButton.cloneNode(false);
   teShroudModeButton.className = namespaced('mode-button shroud-button');
   teShroudModeButton.textContent = glyphs.blackSquare;
+
   var teToggleDoubleButton = teBaseButton.cloneNode(false);
   var toggleButtonBaseClassName = namespaced('double-toggle-button');
   teToggleDoubleButton.className = toggleButtonBaseClassName;
   var teCheckStateDisplay = document.createElement('div');
   teCheckStateDisplay.className = namespaced('check-state');
+  var teModeIndicator = document.createElement('div');
+  teModeIndicator.className = namespaced('mode-indicator');
 
   var maskSpotClassPrefix = namespaced(
     'gross-simpl-spot gross-simpl-round gross-simpl-x');
@@ -312,7 +315,14 @@
 
   function doubleSurpassify(baseInput, opts) {
     var baseRow, checkRow;
+    var container = teSurpassContainer.cloneNode(false);
+    var baseContainerClass = container.className + ' ';
+    function setContainerMode(mode) {
+      container.className = baseContainerClass + namespaced(mode + '-mode');
+    }
+    setContainerMode(opts.mode);
     function setModeBothRows(mode) {
+      setContainerMode(mode);
       baseRow.setMode(mode);
       checkRow.setMode(mode);
     }
@@ -338,6 +348,7 @@
     var toggleButton = teToggleDoubleButton.cloneNode(false);
     var checkStateDisplay = teCheckStateDisplay.cloneNode(false);
     toggleButton.appendChild(checkStateDisplay);
+    toggleButton.appendChild(teModeIndicator.cloneNode(false));
     function setDoubleCheckState(stateName) {
       checkStateDisplay.textContent = checkMessages[stateName];
       toggleButton.className = toggleButtonBaseClassName + ' ' +
@@ -368,10 +379,7 @@
     function toggleDoubleChecking() {
       doubleChecking = !doubleChecking;
       if (doubleChecking) {
-
-
         checkRow.container.hidden = false;
-
         updateDoubleCheckState();
       } else {
         // clear the input and update its state
@@ -385,7 +393,6 @@
     toggleButton.addEventListener('click', toggleDoubleChecking);
     toggleDoubleChecking();
 
-    var container = teSurpassContainer.cloneNode(false);
     container.appendChild(baseRow.container);
     container.appendChild(toggleButton);
     container.appendChild(checkRow.container);
@@ -401,10 +408,17 @@
 
   function singleSurpassify(baseInput, opts) {
     var baseRow;
+    var baseContainerClass = namespaced('container row') + ' ';
+    function setContainerMode(mode) {
+      baseRow.container.className =
+        baseContainerClass + namespaced(mode + '-mode');
+    }
     function propogateModeBack(mode) {
+      setContainerMode(mode);
       return baseRow.setMode(mode);
     }
     baseRow = surpassifyInput(baseInput, opts, propogateModeBack);
+    setContainerMode(opts.mode);
     baseInput.parentNode.replaceChild(baseRow.container, baseInput);
     baseRow.inputContainer.insertBefore(baseInput,
       baseRow.inputContainer.firstChild);

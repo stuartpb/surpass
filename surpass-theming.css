@@ -117,6 +117,36 @@ input {
   font-size: 20px;
 }
 
+.surpass_mode-indicator {
+  margin: 0;
+  margin-left: auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: background-color .25s, margin .1s;
+}
+.surpass_expose-mode .surpass_mode-indicator {
+  margin-right: 7px;
+}
+.surpass_mask-mode .surpass_mode-indicator {
+  margin-right: 32px;
+}
+.surpass_shroud-mode .surpass_mode-indicator {
+  margin-right: 57px;
+}
+.surpass_check-available .surpass_mode-indicator {
+  background-color: #555;
+}
+.surpass_check-prompting .surpass_mode-indicator {
+  background-color: #882;
+}
+.surpass_check-unmatching .surpass_mode-indicator {
+  background-color: #822;
+}
+.surpass_check-matching .surpass_mode-indicator {
+  background-color: #282;
+}
+
 .surpass_double-toggle-button {
   margin: 0;
   padding: 0;

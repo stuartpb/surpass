@@ -116,6 +116,10 @@ input {
   line-height: 1em;
   font-size: 20px;
 }
+.surpass_shroud-button {
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='1' y='1' width='2' height='2' /></svg>");
+  background-size: 100%;
+}
 
 .surpass_mode-indicator {
   margin: 0;

@@ -60,8 +60,7 @@
   }
 
   var glyphs = {
-    eye: decodeURIComponent("%F0%9F%91%81%EF%B8%8E"),
-    blackSquare: decodeURIComponent("%E2%97%BC%EF%B8%8F"),
+    eye: decodeURIComponent("%F0%9F%91%81%EF%B8%8E")
   };
 
   var teSurpassContainer = document.createElement('div');
@@ -85,7 +84,6 @@
   teExposeModeButton.textContent = glyphs.eye;
   var teShroudModeButton = teBaseButton.cloneNode(false);
   teShroudModeButton.className = namespaced('mode-button shroud-button');
-  teShroudModeButton.textContent = glyphs.blackSquare;
 
   var teToggleDoubleButton = teBaseButton.cloneNode(false);
   var toggleButtonBaseClassName = namespaced('double-toggle-button');

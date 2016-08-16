@@ -1,0 +1,24 @@
+{
+  "name": "surpass",
+  "version": "0.1.0",
+  "description": "Taking sensitive field input beyond the ordinary",
+  "main": "surpass.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stuartpb/surpass.git"
+  },
+  "keywords": [
+    "password",
+    "input",
+    "dom"
+  ],
+  "author": "Stuart P. Bentley <stuart@testtrack4.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stuartpb/surpass/issues"
+  },
+  "homepage": "https://github.com/stuartpb/surpass"
+}

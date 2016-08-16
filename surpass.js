@@ -155,8 +155,7 @@
       stopGrossSimplificationTimeout();
 
       // don't display the empty-string simplification,
-      // or when shrouded
-      if (value == '' || mode == 'shroud') {
+      if (value == '') {
         return setMaskButtonDots();
       }
 
@@ -317,14 +316,17 @@
     var baseRow, checkRow;
     var container = teSurpassContainer.cloneNode(false);
     var baseContainerClass = container.className + ' ';
-    function setContainerMode(mode) {
-      container.className = baseContainerClass + namespaced(mode + '-mode');
+    var mode;
+    function setContainerMode(newMode) {
+      mode = newMode;
+      container.className =
+        baseContainerClass + namespaced(mode + '-mode');
     }
     setContainerMode(opts.mode);
-    function setModeBothRows(mode) {
-      setContainerMode(mode);
-      baseRow.setMode(mode);
-      checkRow.setMode(mode);
+    function setModeBothRows(newMode) {
+      setContainerMode(newMode);
+      baseRow.setMode(newMode);
+      checkRow.setMode(newMode);
     }
 
     var checkInput = document.createElement('input');
@@ -364,10 +366,12 @@
           setDoubleCheckState('matching');
 
           // jump the queue on showing shapes
-          if (document.activeElement == baseInput) {
-            baseRow.updateGrossSimplification();
-          } else if (document.activeElement == checkInput) {
-            checkRow.updateGrossSimplification();
+          if (mode != 'shroud') {
+            if (document.activeElement == baseInput) {
+              baseRow.updateGrossSimplification();
+            } else if (document.activeElement == checkInput) {
+              checkRow.updateGrossSimplification();
+            }
           }
         } else {
           setDoubleCheckState('unmatching');
@@ -409,13 +413,15 @@
   function singleSurpassify(baseInput, opts) {
     var baseRow;
     var baseContainerClass = namespaced('container row') + ' ';
-    function setContainerMode(mode) {
+    var mode;
+    function setContainerMode(newMode) {
+      mode = newMode;
       baseRow.container.className =
         baseContainerClass + namespaced(mode + '-mode');
     }
-    function propogateModeBack(mode) {
-      setContainerMode(mode);
-      return baseRow.setMode(mode);
+    function propogateModeBack(newMode) {
+      setContainerMode(newMode);
+      return baseRow.setMode(newMode);
     }
     baseRow = surpassifyInput(baseInput, opts, propogateModeBack);
     setContainerMode(opts.mode);

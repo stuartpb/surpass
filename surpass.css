@@ -167,11 +167,29 @@
   transition-property: background-color;
   transition-duration: .25s;
 }
+
 .surpass_check-row {
-  border-top: 1px solid black;
+  /* 
+  Height needs to be set explicitly for the input to grow in height
+  when transitioning from hidden. If explicitly setting the input's
+  height is untenable, you'll have to do without a height-based
+  transition.
+  
+  (You may consider using the max-height property instead, but
+  you'll still need to define the largest height the row can be,
+  and any shorter heights will reach full expansion before the
+  transition reaches completion.)
+  */
   height: 24px;
+  border-top: 1px solid black;
   transition-property: height, border;
   transition-duration: 0.25s;
+}
+.surpass_check-row[hidden] {
+  visibility: hidden;
+  height: 0;
+  border: 0 solid;
+  transition: visibility step-end .25s, height .25s, border .25s;
 }
 
 .surpass_gross-simpl-spot {
@@ -205,13 +223,6 @@ modern Flexbox support.
   display: flex;
   flex-flow: column nowrap;
   overflow: hidden;
-}
-
-.surpass_check-row[hidden] {
-  visibility: hidden;
-  height: 0;
-  border: 0 solid;
-  transition: visibility step-end .25s, height .25s, border .25s;
 }
 
 .surpass_input-container {

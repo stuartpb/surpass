@@ -52,7 +52,7 @@
   background-color: #cfc;
 }
 
-input {
+.surpass_input-container > input {
   border: 0;
   font-family: monospace, monospace;
   padding: 0 .5ch;

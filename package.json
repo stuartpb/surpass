@@ -1,6 +1,6 @@
 {
   "name": "surpass",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Taking sensitive field input beyond the ordinary",
   "main": "surpass.js",
   "scripts": {
